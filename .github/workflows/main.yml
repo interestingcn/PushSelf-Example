@@ -1,0 +1,40 @@
+name: 'Bing Wallpaper'
+
+on:
+  workflow_dispatch:
+#   push:
+#     branches: 
+#       - master
+  #schedule:
+   # - cron: '0 16 * * *'
+jobs:
+  Bing-spider:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: 'Install requirements'
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          pip install -r ./requirements.txt
+      - name: 'Working'
+        timeout-minutes: 350
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          python3 Bing.py
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "add BingPic" -a
+      - name: 'Push changes'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
