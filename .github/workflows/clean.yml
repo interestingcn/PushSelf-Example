@@ -1,0 +1,29 @@
+name: 'CleanData'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: 删除全部产生内容
+        run: |
+          cd ${GITHUB_WORKSPACE}/pic
+          rm -rf ./*
+          cd ${GITHUB_WORKSPACE}/json
+          rm -rf ./*
+
+      - name: 提交到仓库
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "Clean" -a
+      - name: 'Push changes'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
